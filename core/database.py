@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 from models.base import BaseModel
 from .settings import settings
 
-__all__ = []
+__all__ = ["global_init", "get_async_session", "create_db_and_tables", "delete_db_and_tables"]
 
 __async_engine: Optional[AsyncEngine] = None
 __session_factory: Optional[Callable[[], AsyncSession]] = None
