@@ -5,11 +5,16 @@ from .base import BaseModel
 
 
 class Role(BaseModel):
-    __tablename__ = "roles"
-
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     description: Mapped[str | None] = mapped_column(String(255))
 
-    users = relationship("User", secondary="user_roles", back_populates="rolse")
+    users = relationship("User", secondary="user_roles", back_populates="roles")
+    permissions = relationship(
+        "Permission",
+        secondary="role_permissions",
+        back_populates="roles",
+        lazy="selectin"
+    )
+
 
