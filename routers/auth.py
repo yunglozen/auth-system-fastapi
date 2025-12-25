@@ -1,11 +1,16 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, insert
+from datetime import datetime
 
 from core.database import get_async_session
 from core.security import hash_password, verify_password, create_access_token
 from models.user import User
+from models.revoked_token import RevokedToken
 from schemas.user import UserCreate, UserLogin
+from .profile import get_current_user, oauth2_scheme
+
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -42,4 +47,59 @@ async def register(
 
     session.add(user)
 
-    return {"message": "User registered successfully"}
+    return {"Message": "User registered successfully"}
+
+
+@router.post("/login")
+async def login(
+        form_data: OAuth2PasswordRequestForm = Depends(),
+        session: AsyncSession = Depends(get_async_session)
+):
+    stmt = select(User).where(User.email == form_data.username)
+    result = await session.execute(stmt)
+    user = result.scalar_one_or_none()
+
+    if not user or not verify_password(form_data.password, user.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password",
+        )
+
+    if not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User account is inactive",
+        )
+
+    access_token = create_access_token(user_id=str(user.id))
+
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+    }
+
+
+@router.post("/delete-account")
+async def delete_account(
+        current_user: User = Depends(get_current_user),
+        session: AsyncSession = Depends(get_async_session)
+):
+    current_user.is_active = False
+
+    return {"Message": "User account has been deactivated and logged out."}
+
+
+@router.post("/logout")
+async def logout(
+        token: str = Depends(oauth2_scheme),
+        session: AsyncSession = Depends(get_async_session)
+):
+    stmt = select(RevokedToken).where(RevokedToken.token == token)
+    result = await session.execute(stmt)
+    if result.scalar_one_or_none():
+        raise HTTPException(status_code=400, detail="Token already revoked")
+
+    stmt = insert(RevokedToken).values(token=token, revoked_at=datetime.utcnow())
+    await session.execute(stmt)
+
+    return {"Message": "Successfully logged out"}
