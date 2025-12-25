@@ -9,7 +9,7 @@ from core.security import hash_password, verify_password, create_access_token
 from models.user import User
 from models.revoked_token import RevokedToken
 from schemas.user import UserCreate, UserLogin
-from .profile import get_current_user, oauth2_scheme
+from core.dependencies import get_current_user, oauth2_scheme
 
 
 router = APIRouter(prefix="/auth", tags=["auth"])

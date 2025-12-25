@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 
 from core.database import global_init, create_db_and_tables, delete_db_and_tables
-from routers.auth import router
+from routers import auth, profile, admin, services
 
 
 @asynccontextmanager
@@ -11,7 +11,7 @@ async def lifespan(app: FastAPI):
     global_init()
     await create_db_and_tables()
     yield
-    await delete_db_and_tables()
+    # await delete_db_and_tables()
 
 
 def create_application():
@@ -29,7 +29,10 @@ app = create_application()
 
 
 def _configure():
-    app.include_router(router)
+    app.include_router(auth.router)
+    app.include_router(profile.router)
+    app.include_router(admin.router)
+    app.include_router(services.router)
 
 
 _configure()
