@@ -8,6 +8,7 @@ from models.resource import Resource
 from models.permission import Permission
 from models.user_roles import UserRole
 from models.role_permission import RolePermission
+from models.revoked_token import RevokedToken
 from .settings import settings
 
 __all__ = ["global_init", "get_async_session", "create_db_and_tables", "delete_db_and_tables"]
