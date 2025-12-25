@@ -1,6 +1,7 @@
 from sqlalchemy import String, Boolean, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
+from datetime import datetime
 
 from .base import BaseModel
 
@@ -16,8 +17,12 @@ class User(BaseModel):
 
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
 
-    created_at: Mapped = mapped_column(DateTime(timezone=True), server_default=func.now())
-    updated_at: Mapped = mapped_column(DateTime(timezone=True), onupdate=func.now())
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now()
+        )
 
-    role = relationship("Role", secondary="user_role", back_populates="users", lazy="selectin")
+    roles = relationship("Role", secondary="user_roles", back_populates="users", lazy="selectin")
 
