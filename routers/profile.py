@@ -1,12 +1,16 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, update
 
 from core.database import get_async_session
 from core.security import decode_access_token
 from models.user import User
+from models.role import Role
+from models.resource import Resource
+from models.permission import Permission
 from models.revoked_token import RevokedToken
+from schemas.user import UserUpdate
 
 
 router = APIRouter(prefix="/profile", tags=["profile"])
@@ -36,7 +40,38 @@ async def get_current_user(
     return user
 
 
-@router.get("/info")
+def require_permission(resource_name: str, action: str):
+    async def checker(
+            current_user: User = Depends(get_current_user),
+            session: AsyncSession = Depends(get_async_session)
+    ):
+        stmt = (
+            select(Permission)
+            .join(Permission.roles)
+            .join(Role.users)
+            .join(Permission.resources)
+            .where(
+                User.id == current_user.id,
+                Resource.name == resource_name,
+                Permission.action == action
+            )
+        )
+
+        result = await session.execute(stmt)
+        permission = result.scalar_one_or_none()
+
+        if not permission:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Forbidden"
+            )
+
+        return True
+
+    return checker
+
+
+@router.get("/info", dependencies=[Depends(require_permission("profile", "read"))])
 async def profile(
         current_user: User = Depends(get_current_user)
 ):
@@ -50,3 +85,19 @@ async def profile(
         "created_at": current_user.created_at,
         "updated_at": current_user.updated_at
     }
+
+
+@router.put("/update", dependencies=[Depends(require_permission("profile", "write"))])
+async def update_profile(
+        data: UserUpdate,
+        current_user: User = Depends(get_current_user),
+        session: AsyncSession = Depends(get_async_session)
+):
+    update_data = data.dict(exclude_unset=True)
+
+    stmt = (update(User).where(User.id == current_user.id).values(**update_data)
+            .execution_options(synchronize_session="fetch"))
+
+    await session.execute(stmt)
+
+    return {"Message": "Profile updated successfully"}
