@@ -6,15 +6,14 @@ from sqlalchemy import select, insert
 
 from datetime import datetime
 
-from core.database import get_async_session
-from core.security import hash_password, verify_password, create_access_token
-from core.dependencies import get_current_user, oauth2_scheme
+from app.core.database import get_async_session
+from app.core.security import hash_password, verify_password, create_access_token
+from app.core.dependencies import get_current_user, oauth2_scheme
 
-from models.user import User
-from models.revoked_token import RevokedToken
+from app.models.user import User
+from app.models.revoked_token import RevokedToken
 
-from schemas.user import UserCreate, UserLogin
-
+from app.schemas.user import UserCreate
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 

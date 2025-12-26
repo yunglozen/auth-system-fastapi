@@ -2,15 +2,15 @@ from fastapi import APIRouter, Depends
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.dependencies import require_permission, get_current_user
-from core.database import get_async_session
+from app.core.dependencies import require_permission, get_current_user
+from app.core.database import get_async_session
 
-from models.user import User
-from models.role import Role
-from models.resource import Resource
-from models.permission import Permission
-from models.user_roles import UserRole
-from models.role_permission import RolePermission
+from app.models.user import User
+from app.models.role import Role
+from app.models.resource import Resource
+from app.models.permission import Permission
+from app.models.user_roles import UserRole
+from app.models.role_permission import RolePermission
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 

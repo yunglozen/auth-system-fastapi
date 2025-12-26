@@ -3,9 +3,9 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 
-from core.database import global_init, create_db_and_tables
+from .core.database import global_init, create_db_and_tables
 
-from routers import v1_router
+from .routers import v1_router
 
 
 @asynccontextmanager

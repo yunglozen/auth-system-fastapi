@@ -2,14 +2,7 @@ from typing import AsyncGenerator, Optional, Callable
 
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 
-from models.base import BaseModel
-from models.user import User
-from models.role import Role
-from models.resource import Resource
-from models.permission import Permission
-from models.user_roles import UserRole
-from models.role_permission import RolePermission
-from models.revoked_token import RevokedToken
+from app.models.base import BaseModel
 
 from .settings import settings
 

@@ -5,14 +5,14 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-from core.security import decode_access_token
-from core.database import get_async_session
+from app.core.security import decode_access_token
+from app.core.database import get_async_session
 
-from models.user import User
-from models.role import Role
-from models.resource import Resource
-from models.permission import Permission
-from models.revoked_token import RevokedToken
+from app.models.user import User
+from app.models.role import Role
+from app.models.resource import Resource
+from app.models.permission import Permission
+from app.models.revoked_token import RevokedToken
 
 __all__ = ["get_current_user", "require_permission"]
 

@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 
-from core.dependencies import require_permission, get_current_user
+from app.core.dependencies import require_permission, get_current_user
 
-from models.user import User
+from app.models.user import User
 
 router = APIRouter(prefix="/services", tags=["services"])
 
