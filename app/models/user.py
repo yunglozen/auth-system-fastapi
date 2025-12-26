@@ -20,7 +20,7 @@ class User(BaseModel):
         DateTime(timezone=True),
         server_default=func.now(),
         onupdate=func.now()
-        )
+    )
 
     roles = relationship("Role", secondary="user_roles", back_populates="users", lazy="selectin")
 
