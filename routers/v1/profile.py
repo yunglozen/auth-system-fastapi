@@ -1,10 +1,13 @@
 from fastapi import APIRouter, Depends
+
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import update
 
 from core.database import get_async_session
 from core.dependencies import get_current_user, require_permission
+
 from models.user import User
+
 from schemas.user import UserUpdate
 
 

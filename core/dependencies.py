@@ -1,18 +1,22 @@
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
 from core.security import decode_access_token
 from core.database import get_async_session
+
 from models.user import User
 from models.role import Role
 from models.resource import Resource
 from models.permission import Permission
 from models.revoked_token import RevokedToken
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+__all__ = ["get_current_user", "require_permission"]
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/auth/login")
 
 
 async def get_current_user(

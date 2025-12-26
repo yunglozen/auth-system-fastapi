@@ -1,9 +1,11 @@
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 
-from core.database import global_init, create_db_and_tables, delete_db_and_tables
-from routers import auth, profile, admin, services
+from core.database import global_init, create_db_and_tables
+
+from routers import v1_router
 
 
 @asynccontextmanager
@@ -29,10 +31,7 @@ app = create_application()
 
 
 def _configure():
-    app.include_router(auth.router)
-    app.include_router(profile.router)
-    app.include_router(admin.router)
-    app.include_router(services.router)
+    app.include_router(v1_router)
 
 
 _configure()
