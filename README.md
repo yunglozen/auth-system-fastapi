@@ -104,13 +104,13 @@
 
 ### Через Docker
 
-bash```docker-compose up --build - запуск 
-docker-compose down - завершение```
+`docker-compose up --build` - запуск 
+`docker-compose down` - завершение
 
 ### Через Makefile
 
-bash```make up_compose - запуск
-make down_compose - завершение```
+`make up_compose` - запуск
+`make down_compose` - завершение
 
 ## Готовые пользователи
 
