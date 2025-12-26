@@ -92,13 +92,13 @@
 
 ### Пример структуры:
 
-`User: John`
-`Roles: admin, manager`
-`Permissions через роли:`
+- `User: John`
+- `Roles: admin, manager`
+- `Permissions через роли:`
 
-`admin → panel: write`
-`admin → photos: read`
-`manager → notes: read, write`
+- `admin → panel: write`
+- `admin → photos: read`
+- `manager → notes: read, write`
 
 ## Запуск проекта
 
